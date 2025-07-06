@@ -8,6 +8,7 @@ app.get ("/api/health",(req,res)=>{
     res.status(200).json({success:true})
 });
 
+// app.post("/api/fav")
 app.listen(PORT,()=>{
     console.log("server is runnig on PORT:",PORT);
 })
