@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const VerifyEmailScreen = () => {
+const VerifyEmail = () => {
   return (
     <View>
       <Text>VerifyEmailScreen</Text>
@@ -9,4 +9,4 @@ const VerifyEmailScreen = () => {
   );
 };
 
-export default VerifyEmailScreen
+export default VerifyEmail
