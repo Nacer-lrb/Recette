@@ -1,4 +1,4 @@
-import { Text, View ,ScrollView,TouchableOpacity,FlatList} from 'react-native'
+import { Text, View ,ScrollView,TouchableOpacity,FlatList,RefreshControl} from 'react-native'
 import { useState,useEffect} from 'react';
 import { useRouter } from 'expo-router';
 import {MealAPI} from "../../services/mealAPI"
@@ -69,6 +69,12 @@ const HomeScreen = () => {
     setSelectedCategory(category);
     await loadCategoryData(category);
   };
+  const onRefresh = async () => {
+    setRefreshing(true);
+    // await sleep(2000);
+    await loadData();
+    setRefreshing(false);
+  };
   useEffect(() => {
     loadData();
   }, []);
@@ -78,6 +84,13 @@ const HomeScreen = () => {
     <View style ={homeStyles.container}>
     <ScrollView
     showsVerticalScrollIndicator={false}
+    refreshControl={
+      <RefreshControl
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+        tintColor={COLORS.primary}
+      />
+    }
     contentContainerStyle={homeStyles.scrollContent}
     >
       {/*welcom icons */}
