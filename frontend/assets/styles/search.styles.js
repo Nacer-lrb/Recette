@@ -16,7 +16,7 @@ export const searchStyles = StyleSheet.create({
     backgroundColor: COLORS.card,
     borderRadius: 16,
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 6,
     borderWidth: 1,
     borderColor: COLORS.border,
     shadowColor: COLORS.shadow,
@@ -33,7 +33,7 @@ export const searchStyles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 14,
     color: COLORS.text,
   },
   clearButton: {
