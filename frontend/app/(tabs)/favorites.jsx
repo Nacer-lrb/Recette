@@ -1,14 +1,19 @@
-import { View, Text } from 'react-native'
-import {useClerk,useUser} from "@clerk/clerk-expo"
-import { useEffect,useState } from 'react'
-
-
+import { View, Text, Alert, ScrollView, TouchableOpacity, FlatList } from "react-native";
+import { useClerk, useUser } from "@clerk/clerk-expo";
+import { useEffect, useState } from "react";
+import { API_URL } from "../../constants/api";
+import { favoritesStyles } from "../../assets/styles/favorites.styles";
+import { COLORS } from "../../constants/colors";
+import { Ionicons } from "@expo/vector-icons";
+import RecipeCard from "../../components/RecipeCard";
+import NoFavoritesFound from "../../components/NoFavoritesFound";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const FavoritesScreen = () => {
   const {signOut} =useClerk()
   const {user}= useUser()
-  const {favotiteRecipes,setFavoriteRevipes} = useState()
-  const {loading,setLoading}=useEffect()
+  const {favotiteRecipes,setFavoriteRevipes} =useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(()=>{
     const loadFavorites = async() =>{
