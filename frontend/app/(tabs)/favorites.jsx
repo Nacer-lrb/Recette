@@ -10,44 +10,76 @@ import NoFavoritesFound from "../../components/NoFavoritesFound";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
 const FavoritesScreen = () => {
-  const {signOut} =useClerk()
-  const {user}= useUser()
-  const {favotiteRecipes,setFavoriteRevipes} =useState([]);
+  const { signOut } = useClerk();
+  const { user } = useUser();
+  const [favoriteRecipes, setFavoriteRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(()=>{
-    const loadFavorites = async() =>{
-      try{
-  const responce = await fetch(`${API_URL}/api/favorites/${user.id}`)
-  if(!responce.ok) throw new Error("Failed to fetch favorites")
+  useEffect(() => {
+    const loadFavorites = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/favorites/${user.id}`)
+        if (!response.ok) throw new Error("Failed to fetch favorites");
 
-    const favorites = await responce.json();
+        const favorites = await response.json();
 
-      // transform the data to match the RecipeCard component's expected format
-      const transformedFavorites = favorites.map((favorite) => ({
-        ...favorite,
-        id: favorite.recipeId,
-      }));
+        // transform the data to match the RecipeCard component's expected format
+        const transformedFavorites = favorites.map((favorite) => ({
+          ...favorite,
+          id: favorite.recipeId,
+        }));
 
-    setFavoriteRevipes(transformedFavorites)
-
+        setFavoriteRecipes(transformedFavorites);
       } catch (error) {
         console.log("Error loading favorites", error);
         Alert.alert("Error", "Failed to load favorites");
       } finally {
         setLoading(false);
       }
-    }
+    };
+
     loadFavorites();
+  }, [user.id]);
 
-  },[user.id]);
+  const handleSignOut = () => {
+    Alert.alert("Logout", "Are you sure you want to logout?", [
+      { text: "Cancel", style: "cancel" },
+      { text: "Logout", style: "destructive", onPress: signOut },
+    ]);
+  };
 
+  if (loading) return <LoadingSpinner message="Loading your favorites..." />;
 
   return (
-    <View>
-      <Text>FavoritesScreen</Text>
-    </View>
-  )
-}
+    <View style={favoritesStyles.container}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={favoritesStyles.header}>
+          <Text style={favoritesStyles.title}>Favorites</Text>
+          <TouchableOpacity style={favoritesStyles.logoutButton} onPress={handleSignOut}>
+            <Ionicons name="log-out-outline" size={22} color={COLORS.text} />
+          </TouchableOpacity>
+        </View>
 
-export default FavoritesScreen
+        <View style={favoritesStyles.recipesSection}>
+          <FlatList
+            data={favoriteRecipes}
+            renderItem={({ item }) => <RecipeCard recipe={item} />}
+            keyExtractor={(item) => item.id.toString()}
+            numColumns={2}
+            columnWrapperStyle={favoritesStyles.row}
+            contentContainerStyle={favoritesStyles.recipesGrid}
+            scrollEnabled={false}
+            ListEmptyComponent={<NoFavoritesFound />}
+          />
+        </View>
+      </ScrollView>
+    </View>
+  );
+};
+export default FavoritesScreen;
+
+
+
+
+
+
