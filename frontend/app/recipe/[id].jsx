@@ -1,11 +1,17 @@
-import { View, Text } from 'react-native'
-import {useLocalSearchParams} from "expo-router"
+import { View, Text,ScrollView,TouchableOpacity} from 'react-native'
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {useUser} from "@clerk/clerk-expo"
 import {MealAPI} from "../../services/mealAPI"
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { API_URL } from "../../constants/api";
+import { recipeDetailStyles } from "../../assets/styles/recipe-detail.styles";
+import { Image } from "expo-image";
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from "@expo/vector-icons";
+import { COLORS } from "../../constants/colors";
     const RecipeDetailScreen = () => {
+      const router = useRouter()
 
     const {id:recipeId} = useLocalSearchParams()
    
@@ -118,8 +124,35 @@ import { API_URL } from "../../constants/api";
 
 
   return (
-    <View>
-      <Text>RecipeDetailScreen</Text>
+    <View style={recipeDetailStyles.container}>
+      <ScrollView>
+      <View style={recipeDetailStyles.headerContainer}>
+      <View style={recipeDetailStyles.imageContainer}>
+      <Image
+              source={{ uri: recipe.image }}
+              style={recipeDetailStyles.headerImage}
+              contentFit="cover"
+            />
+          </View>
+          <LinearGradient
+            colors={["transparent", "rgba(0,0,0,0.5)", "rgba(0,0,0,0.9)"]}
+            style={recipeDetailStyles.gradientOverlay}
+          />
+           <View style={recipeDetailStyles.floatingButtons}>
+            <TouchableOpacity
+              style={recipeDetailStyles.floatingButton}
+              onPress={() => router.back()}
+            >
+              <Ionicons name="arrow-back" size={24} color={COLORS.white} />
+            </TouchableOpacity>
+            
+
+          </View>
+
+        </View>
+
+      </ScrollView>
+     
     </View>
   )
 }
