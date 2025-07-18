@@ -2,6 +2,7 @@ import { View, Text } from 'react-native'
 import {useLocalSearchParams} from "expo-router"
 import { useState,useEffect } from 'react'
 import {useUser} from "@clerk/clerk-expo"
+import {MealAPI} from "../../services/mealAPI"
 
     const RecipeDetailScreen = () => {
 
@@ -25,13 +26,42 @@ import {useUser} from "@clerk/clerk-expo"
               console.error("Error checking if recipe is saved:", error);
             }
           };
+
+
+          const LoadRecipeDetail = async () => {
+            setLoading(true)
+            try{
+              const melData = await MealAPI.getMealById(recipeId);
+              if(melData){
+                const transformedRecipe = MealAPI.transformMealData(mealData);
+      
+                const recipeWithVideo = {
+                  ...transformedRecipe,
+                  youtubeUrl: mealData.strYoutube || null,
+                };
+      
+                setRecipe(recipeWithVideo);
+              }
+      
+            }
+      
+            catch(error){
+              console.error("Error loading recipe detail:", error);
+      
+            }finally{
+      
+              setLoading(false)
+            }
+      
+            
+          }
+      
+      checkIfSaved()
+      LoadRecipeDetail()
       
 
-    },[])
-
-
-
-
+    },[recipeId, userId]);
+   
 
 
 
