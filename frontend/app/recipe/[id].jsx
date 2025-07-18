@@ -1,17 +1,19 @@
 import { View, Text } from 'react-native'
 import {useLocalSearchParams} from "expo-router"
-import { useState,useEffect } from 'react'
+import { useEffect, useState } from "react";
 import {useUser} from "@clerk/clerk-expo"
 import {MealAPI} from "../../services/mealAPI"
-
+import LoadingSpinner from "../../components/LoadingSpinner";
+import { API_URL } from "../../constants/api";
     const RecipeDetailScreen = () => {
 
     const {id:recipeId} = useLocalSearchParams()
-    const {recipe,setRecipe} = useSatate(null)
-    const {loading,setLoading} = useState(true)
-    const {isSaved,setIsSaved} = useState(false)
-    const {isSaving, setIsSaving} = useState(false)
-
+   
+  const [recipe, setRecipe] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isSaved, setIsSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  
     const {user} = useUser();
     const userId = user?.id ;
 
@@ -28,17 +30,18 @@ import {MealAPI} from "../../services/mealAPI"
           };
 
 
-          const LoadRecipeDetail = async () => {
-            setLoading(true)
-            try{
-              const melData = await MealAPI.getMealById(recipeId);
-              if(melData){
+          const loadRecipeDetail = async () => {
+            setLoading(true);
+            try {
+              const mealData = await MealAPI.getMealById(recipeId);
+              if (mealData) {
                 const transformedRecipe = MealAPI.transformMealData(mealData);
       
                 const recipeWithVideo = {
                   ...transformedRecipe,
                   youtubeUrl: mealData.strYoutube || null,
                 };
+      
       
                 setRecipe(recipeWithVideo);
               }
@@ -57,7 +60,7 @@ import {MealAPI} from "../../services/mealAPI"
           }
       
       checkIfSaved()
-      LoadRecipeDetail()
+      loadRecipeDetail()
       
 
     },[recipeId, userId]);
@@ -104,13 +107,13 @@ import {MealAPI} from "../../services/mealAPI"
         console.error("Error toggling recipe save:", error);
         Alert.alert("Error", `Something went wrong. Please try again.`);
 
-        
+
       } finally {
         setIsSaving(false);
       }
     };
   
-
+    if (loading) return <LoadingSpinner message="Loading recipe details..." />;
 
 
 
