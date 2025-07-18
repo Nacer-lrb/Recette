@@ -8,6 +8,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../../constants/colors";
 import CategoryFilter from "../../components/CategoryFilter";
 import RecipeCard from "../../components/RecipeCard";
+import LoadingSpinner from "../../components/LoadingSpinner";
 const HomeScreen = () => {
   const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState("Beef");
@@ -78,7 +79,7 @@ const HomeScreen = () => {
   useEffect(() => {
     loadData();
   }, []);
-
+  if (loading && !refreshing) return <LoadingSpinner message="Loading delicions recipes..." />;
 
   return (
     <View style ={homeStyles.container}>
